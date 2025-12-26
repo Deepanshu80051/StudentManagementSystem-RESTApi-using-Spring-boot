@@ -1,0 +1,88 @@
+package com.example.demo;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/students")
+public class StudentController 
+{
+	
+	private List<Student> list = new ArrayList<>();
+	
+	@PostMapping
+	public String addStudent(@RequestBody Student stu)
+	{
+		list.add(stu);
+		return "Data Added";
+	}
+	
+	@GetMapping
+	public List<Student> viewAll()
+	{
+		return list;
+	}
+	
+	@GetMapping("/{id}")
+	public Student getStudent(@PathVariable int id)
+	{
+		for(Student s : list)
+		{
+			if(s.getId() == id)
+			{
+				return s;
+			}
+		}
+		return null;
+	}
+	
+	@PutMapping("/{id}")
+	public String updateStudent(@PathVariable int id, @RequestBody Student uptStu)
+	{
+		for(Student s : list)
+		{
+			if(s.getId() == id)
+			{
+				s.setName(uptStu.getName());
+				s.setEmail(uptStu.getEmail());
+				s.setCourse(uptStu.getCourse());
+				
+				return "updated";
+			}
+		}
+		return "not found";
+	}
+	
+	@DeleteMapping("/{id}")
+	public String deleteStu(@PathVariable int id)
+	{
+		Student found = null;
+		for(Student s : list)
+		{
+			if(s.getId() == id)
+			{
+				found = s;
+				break;
+			}
+		}
+		
+		if(found != null)
+		{
+			list.remove(found);
+			return "deleted";
+		}
+		return"not found";
+	}
+	
+
+	
+}
